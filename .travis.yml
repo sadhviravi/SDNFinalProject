@@ -4,7 +4,7 @@ python:
   - "3.5.2"
 install:
   - pip3 install netmiko
-script: python3 test.py input.yml
+script: python3 test.py
 branches:
   only:
     - master
