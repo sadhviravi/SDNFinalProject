@@ -1,12 +1,23 @@
-dist: xenial
 language: python
-python:
-  - "3.6.3"
+sudo: required
+
+matrix:
+  include:
+    - dist: trusty
+      env: dist="14.04 LTS trusty"
+    - dist: xenial
+      env: dist="16.04 LTS xenial"
+
+before_install:
+- sudo apt-get update -qq
+- sudo apt-get install -qq vlan
+- sudo util/install.sh -n
+
 install:
-  - pip3 install netmiko
-  - pip3 install ryu
-  - git clone --depth=50 --branch=master https://github.com/mininet/mininet.git mininet/mininet
-script: python3 test.py
-branches:
-  only:
-    - master
+- bash -c "[ `lsb_release -rs` == '14.04' ] && make codecheck"
+- sudo util/install.sh -fnvw
+
+script:
+- sudo mn --test pingall
+- sudo python mininet/test/runner.py -v -quick
+- sudo python examples/test/runner.py -v -quick
